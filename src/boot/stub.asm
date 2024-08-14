@@ -1,29 +1,48 @@
-MBALIGN  equ  1 << 0
-MEMINFO  equ  1 << 1
-MBFLAGS  equ  MBALIGN | MEMINFO
-MAGIC    equ  0x1BADB002
-CHECKSUM equ -(MAGIC + MBFLAGS)
+.set ALIGN, 1<<0
+.set MEMINFO, 1<<1
+.set FLAGS, 0x00000007
+.set MAGIC, 0x1BADB002
+.set CHECKSUM, -(MAGIC + FLAGS) & 0xFFFFFFFF
 
-section .multiboot
-align 4
-	dd MAGIC
-	dd MBFLAGS
-	dd CHECKSUM
+.set WIDTH,  800
+.set HEIGHT, 600
+.set DEPTH,  32
 
-section .bss
-align 16
+.section .multiboot
+
+.align 16, 0
+multiboot_header:
+    .long   MAGIC
+    .long   FLAGS
+    .long   CHECKSUM
+
+    # aout kludge (unused)
+    .long 0,0,0,0,0
+
+    # Video mode
+    .long   0       # Linear graphics please?
+    .long   WIDTH   # Preferred width
+    .long   HEIGHT  # Preferred height
+    .long   DEPTH   # Preferred pixel depth
+.section .bss
+.align 16
 stack_bottom:
-  resb 16384 ; 16 KiB
+	.skip  16384
 stack_top:
 
-section .text
-extern kmain
-global _start:function (_start.end - _start)
+.section .text
+.global _start
+.type _start, @function
 _start:
-	mov esp, stack_top
+	mov $stack_top, %esp
+	/* multiboot */
+	push %eax
+	push %ebx
 	call kmain
 
+	/* exited? */
 	cli
-.hang:	hlt
-	jmp .hang
-.end:
+1: hlt
+	jmp 1b
+
+.size _start, . - _start
