@@ -33,8 +33,25 @@ stack_top:
 .section .text
 .global _start
 .type _start, @function
+
+enable_sse:
+    mov %cr0, %eax
+    and $0xfffb, %ax
+    or $0x2, %ax
+    mov %eax, %cr0
+    mov %cr4, %eax
+    or $0x600, %eax
+    mov %eax, %cr4
+    ret
+
 _start:
 	mov $stack_top, %esp
+
+    # Enable SSE, so we can do floating point stuff
+    call enable_sse
+
+    ;; Still here? SSE has been enabled.
+
 	/* multiboot */
 	push %eax
 	push %ebx
