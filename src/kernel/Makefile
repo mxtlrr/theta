@@ -1,6 +1,5 @@
 INCLUDE := ../../include
-CFLAGS := -I$(INCLUDE) -std=gnu99 -ffreestanding -O2 \
-					-Wall -Wextra
+CFLAGS := -I$(INCLUDE) -std=gnu99 -ffreestanding -O2
 
 CC := i386-elf-gcc
 OBJ := ../../obj/

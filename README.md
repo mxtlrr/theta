@@ -15,3 +15,7 @@ Then just run `make`.
 ## Running
 ```
 qemu-system-i386 -m 256 -cdrom theta.iso
+```
+
+# Credit
+This kernel uses `ssfn` code. Adapted from [mmlv](https://github.com/mxtlr/mmlv)
