@@ -50,7 +50,7 @@ _start:
     # Enable SSE, so we can do floating point stuff
     call enable_sse
 
-    ;; Still here? SSE has been enabled.
+    # Still here? SSE has been enabled.
 
 	/* multiboot */
 	push %eax
