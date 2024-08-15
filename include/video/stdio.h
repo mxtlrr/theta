@@ -1,6 +1,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdarg.h>
+
+#include "libc/string.h"
 
 extern int x;
 extern int y;
@@ -19,5 +22,6 @@ void setcolor(uint32_t newcol);
 
 void putc(char c);
 void puts(char* s);
+void printf(char* fmt, ...);
 
 void writestring(char* s);

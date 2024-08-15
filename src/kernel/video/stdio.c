@@ -1,6 +1,8 @@
 #include "video/stdio.h"
 #include "video/font.h"
 
+#include "libc/math.h"
+
 int x = 0;
 int y = 0;
 uint32_t color = 0xffffff;
@@ -24,6 +26,58 @@ void putc(char c){
 
 void puts(char* s){
   writestring(s);
+}
+
+#define PREC 3
+int get_frac_part(float num){
+  return (int)(((num-((int)num)) * pow(10, PREC)) + 0.5f);
+}
+
+
+float saved = 0.0f;
+
+void printf(char* fmt, ...){
+  va_list ap;
+  va_start(ap, fmt);
+	char* ptr;
+
+	for (ptr = fmt; *ptr != '\0'; ++ptr) {
+		if (*ptr == '%') {
+			++ptr;
+
+      // Check through different control sequences
+      switch(*ptr){
+        case 's': // String
+          puts(va_arg(ap, char*));
+          break;
+
+        case 'd': // Integer
+          puts(atoi(va_arg(ap, int), 10));
+          break;
+
+        case 'x': // Hexadecimal
+          puts(atoi(va_arg(ap, uint32_t), 16));
+          break;
+
+        // Floating point values.
+        // For example -- 153.2. We split it into
+        // [153] and [2]. Then print out 153, a period and then the 2.
+        case 'f':
+          // We can easily get the non-decimal part if we just
+          // cast it to an integer.
+
+          // Fixme: This code is absolutely disgusting. I'm not allowed
+          // to put labels here. Kinda weird.
+          saved = va_arg(ap, double);
+          puts(atoi((int)saved, 10));
+          puts(".");
+          puts(atoi(get_frac_part(saved), 10));
+          break;
+      }
+    } else {
+      putc(*ptr);
+    }
+  }
 }
 
 
