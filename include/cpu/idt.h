@@ -23,7 +23,9 @@ typedef struct {
 
 // Registers for interrupt handlers.
 typedef struct {
-	uint32_t ds;
+	uint32_t useless_ds; // DS doesn't get pushed by CPU,
+											 // and everything is working w current struct,
+											 // so keep as is.
 	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
 	// https://wiki.osdev.org/Interrupt_Service_Routines
 	uint32_t int_no, errcode;

@@ -6,7 +6,6 @@ isr_stub_%+%1:
 	;; push the ISR number
 	push byte %1
 	jmp isr_stub
-  iret 
 %endmacro
 
 %macro isr_no_err_stub 1
@@ -14,7 +13,6 @@ isr_stub_%+%1:
 	push byte 0		;; Empty error code
 	push byte %1	;; Push the ISR number to the stack
 	jmp isr_stub
-  iret
 %endmacro
 
 isr_stub:
@@ -69,7 +67,6 @@ isr_stub_table:
 %endrep
 
 
-;; Like the ISRs, we need to do the same thing for the IRQs.
 ;; Instead of just halting, we want to eventually go and handle it,
 ;; when I write handlers for the IRQs.
 
@@ -101,6 +98,7 @@ IRQ 15, 47
 
 extern irq_handler		;; see isr.c
 irq_stub:
+	pusha		;; For some reason NOT having this the CPU to enter vm86 mode.
 	cld		;; ABI requires DF clear on function entry.
 	call irq_handler
 	popa
