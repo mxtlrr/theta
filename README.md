@@ -79,3 +79,11 @@ To contribute to theta, all you need to do is:
 That's it! I don't care if you use semantic commit messages or not.
 The only thing I do ask of you is that every commit is compilable. E.g.
 you can revert to a specific commit and everything will compile smoothly.
+
+# Support
+If you like my work, and would like to support me, you can donate to me.
+```
+XMR: 42vBH8y2qujTe5eV3PX2aXHokYrH8Qe1VeGSgRRfNvNYPXRuPFnTgjBg3eK26YPwJXEmynvXDesxw3peKYwDYkD28Mp2dFN
+```
+
+
