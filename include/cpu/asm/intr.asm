@@ -12,7 +12,7 @@ isr_stub_%+%1:
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
 	push byte 0		;; Empty error code
-	push %1	;; Push the ISR number to the stack
+	push byte %1	;; Push the ISR number to the stack
 	jmp isr_stub
   iret
 %endmacro
@@ -101,8 +101,6 @@ IRQ 15, 47
 
 extern irq_handler		;; see isr.c
 irq_stub:
-	pusha ;; Push all general purpose registers
-	
 	cld		;; ABI requires DF clear on function entry.
 	call irq_handler
 	popa

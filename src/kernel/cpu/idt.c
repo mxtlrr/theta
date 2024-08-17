@@ -66,10 +66,11 @@ void idt_init() {
 	
 	// The code for enabling the IRQs is practically the same, except we
 	// start at 32 and end at 47.
-	for(uint8_t vector_irq = 32; vector_irq < 47; vector_irq++){
-		idt_set_descriptor(vector_irq, irq_stub_table[vector], 0x8e);
-		vectors[vector_irq] = true; // Set to enabled.
+	for(uint8_t vector = 32; vector < 48; vector++){
+		idt_set_descriptor(vector, irq_stub_table[vector-32], 0x8e);
+		vectors[vector] = true; // Set to enabled.
 	}
+
 
 	// Enable interrupts
   __asm__ volatile ("sti");

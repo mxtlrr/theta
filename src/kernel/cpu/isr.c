@@ -58,8 +58,6 @@ void exception_handler(registers_t* r){
 
 
 void irq_handler(registers_t* r){
-	printf("Got %d", r->int_no);
-
 	// Acknowledge the interrupt, send an EOI.
 	// Did the IRQ come from slave PIC? (Anything above IRQ7 [39])
 	if(r->int_no >= 40){
