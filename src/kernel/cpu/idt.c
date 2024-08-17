@@ -1,5 +1,4 @@
 #include "cpu/idt.h"
-#include "io.h"
 
 __attribute__((aligned(0x10)))
 static idt_entry_t idt[256];
@@ -7,6 +6,7 @@ static idtr_t idtr;
 
 static bool vectors[IDT_MAX_DESCRIPTORS];
 extern void* isr_stub_table[];
+extern void* irq_stub_table[];
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags){
   idt_entry_t* desc = &idt[vector];
@@ -26,8 +26,8 @@ void remap_pic(){
 	a2 = inb(0xa1);
 
 	// Start initialization mode
-	outb(0x20, 0x10 | 0x01);
-	outb(0xa0, 0x10 | 0x01);
+	outb(0x20, 0x10 | 0x01); // 0x11
+	outb(0xa0, 0x10 | 0x01); // 0x11
 
 	// Send offsets to both master and slave
 	outb(0x21, 0x20);
@@ -63,7 +63,14 @@ void idt_init() {
 	// the Double Fault handler, so it raises an exception (not good)
 	remap_pic();
 	// Now, we shouldn't get an exception when we load interrupts.
-  __asm__ volatile ("sti");
+	
+	// The code for enabling the IRQs is practically the same, except we
+	// start at 32 and end at 47.
+	for(uint8_t vector_irq = 32; vector_irq < 47; vector_irq++){
+		idt_set_descriptor(vector_irq, irq_stub_table[vector], 0x8e);
+		vectors[vector_irq] = true; // Set to enabled.
+	}
 
-	// The next thing I need to do is enable IRQs.
+	// Enable interrupts
+  __asm__ volatile ("sti");
 }

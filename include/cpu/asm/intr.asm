@@ -12,18 +12,18 @@ isr_stub_%+%1:
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
 	push byte 0		;; Empty error code
-	push byte %1	;; Push the ISR number to the stack
+	push %1	;; Push the ISR number to the stack
 	jmp isr_stub
   iret
 %endmacro
 
 isr_stub:
 	pusha ;; Push all general purpose registers
-	
+
 	cld		;; ABI requires DF clear on function entry.
 	call exception_handler
-	popa
 
+	popa
 	add esp, 8
 	iret
 
@@ -67,3 +67,55 @@ isr_stub_table:
   dd isr_stub_%+i
 %assign i i+1 
 %endrep
+
+
+;; Like the ISRs, we need to do the same thing for the IRQs.
+;; Instead of just halting, we want to eventually go and handle it,
+;; when I write handlers for the IRQs.
+
+;; Parameter one is the IRQ number itself,
+;; and parameter two is the IRQ number + 32
+%macro IRQ 2
+irq_stub_%1:
+	push byte 0		;; No error code (obviously)
+	push byte %2	;; This is the IRQ
+	jmp irq_stub
+%endmacro
+
+IRQ 0,  32
+IRQ 1,  33
+IRQ 2,  34
+IRQ 3,  35
+IRQ 4,  36
+IRQ 5,  37
+IRQ 6,  38
+IRQ 7,  39
+IRQ 8,  40
+IRQ 9,  41
+IRQ 10, 42
+IRQ 11, 43
+IRQ 12, 44
+IRQ 13, 45
+IRQ 14, 46
+IRQ 15, 47
+
+extern irq_handler		;; see isr.c
+irq_stub:
+	pusha ;; Push all general purpose registers
+	
+	cld		;; ABI requires DF clear on function entry.
+	call irq_handler
+	popa
+
+	add esp, 8
+	iret
+
+;; Stub table -- prevents repeated code
+global irq_stub_table
+irq_stub_table:
+%assign j 0
+%rep 15
+	dd irq_stub_%+j
+%assign j j+1
+%endrep
+

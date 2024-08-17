@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "io.h"
+
 #define CODESEG_KERNEL 0x08
 #define IDT_MAX_DESCRIPTORS 256
 

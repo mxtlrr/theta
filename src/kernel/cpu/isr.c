@@ -36,7 +36,7 @@ void analyze_gpf(uint32_t errcode){
 	}
 
 	// Bits 3-15 are the selector
-	printf("Index: %d (hex: %x)\n", (errcode >> 3) & 0x1FFF);
+	printf("Index: %d (hex: %x)\n", (errcode >> 3) & 0x1FFF, (errcode >> 3) & 0x1FFF);
 }
 
 __attribute__((interrupt))
@@ -52,6 +52,18 @@ void exception_handler(registers_t* r){
 	// If the opcode is 0x0d (GPF) then we can analyze what actually
 	// happened.
 	if(r->int_no == 0x0d && r->errcode != 0) analyze_gpf(r->errcode);
-
   for(;;) __asm__("cli; hlt");
+}
+
+
+
+void irq_handler(registers_t* r){
+	printf("Got %d", r->int_no);
+
+	// Acknowledge the interrupt, send an EOI.
+	// Did the IRQ come from slave PIC? (Anything above IRQ7 [39])
+	if(r->int_no >= 40){
+		outb(0xa0,0x20);
+	}
+	outb(0x20, 0x20); // Also send EOI to master PIC.
 }
