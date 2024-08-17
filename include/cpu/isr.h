@@ -1,6 +1,7 @@
 #pragma once
 
 #include "video/stdio.h"
+#include "cpu/idt.h"
 
-__attribute__((noreturn))
-void exception_handler(void);
+__attribute__((interrupt))
+void exception_handler(registers_t* r);

@@ -1,15 +1,19 @@
 extern exception_handler
 %macro isr_err_stub 1
 isr_stub_%+%1:
-  call exception_handler
+	jmp isr_stub
   iret 
 %endmacro
 
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
-  call exception_handler
+	jmp isr_stub
   iret
 %endmacro
+
+isr_stub:
+	call exception_handler
+	iret
 
 isr_no_err_stub 0
 isr_no_err_stub 1
