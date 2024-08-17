@@ -21,8 +21,11 @@ typedef struct {
 
 // Registers for interrupt handlers.
 typedef struct {
+	uint32_t ds;
+	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
 	// https://wiki.osdev.org/Interrupt_Service_Routines
-	uint32_t eflags, cs, ip;
+	uint32_t int_no, errcode;
+	uint32_t ip, cs, eflags, useless, ss;
 } registers_t;
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);

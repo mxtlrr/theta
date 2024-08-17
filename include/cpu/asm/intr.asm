@@ -1,18 +1,30 @@
 extern exception_handler
 %macro isr_err_stub 1
 isr_stub_%+%1:
+	;; The error code has already been pushed to the stack
+	;; when the interrupt is raised, so all we need to do is
+	;; push the ISR number
+	push byte %1
 	jmp isr_stub
   iret 
 %endmacro
 
 %macro isr_no_err_stub 1
 isr_stub_%+%1:
+	push byte 0		;; Empty error code
+	push byte %1	;; Push the ISR number to the stack
 	jmp isr_stub
   iret
 %endmacro
 
 isr_stub:
+	pusha ;; Push all general purpose registers
+	
+	cld		;; ABI requires DF clear on function entry.
 	call exception_handler
+	popa
+
+	add esp, 8
 	iret
 
 isr_no_err_stub 0
