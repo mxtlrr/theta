@@ -15,7 +15,7 @@
   - [ ] Get memory map from GRUB
   - [ ] `malloc`/`free`/etc...
 - [ ] IRQ / device drivers
-  - [ ] PIT timer
+  - [X] PIT timer
   - [ ] PS/2 keyboard
 
 # Phase 3: Math library

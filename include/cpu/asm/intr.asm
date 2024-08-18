@@ -99,10 +99,27 @@ IRQ 15, 47
 extern irq_handler		;; see isr.c
 irq_stub:
 	pusha		;; For some reason NOT having this the CPU to enter vm86 mode.
+
+	mov ax, ds
+	push eax
+
+	;; Fix up selectors
+	mov ax, 10h
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+
 	cld		;; ABI requires DF clear on function entry.
 	call irq_handler
-	popa
 
+	pop eax
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	
+	popa
 	add esp, 8
 	iret
 

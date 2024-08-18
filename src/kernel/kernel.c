@@ -4,6 +4,7 @@
 #include "video/stdio.h"
 
 #include "cpu/idt.h"
+#include "cpu/irq/pit.h"
 
 // Defined in gdt.asm
 extern void load_gdt();
@@ -16,6 +17,7 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
 
   idt_init();
   printf("Enabled IDT!\n");
-  
+
+  init_pit();
   for(;;) asm("hlt");
 }
