@@ -11,9 +11,9 @@
 - [X] GDT
 - [X] IDT
   - [X] Exceptions
-- [ ] Heap
-  - [ ] Get memory map from GRUB
-  - [ ] `malloc`/`free`/etc...
+- [X] Heap
+  - [X] Get memory map from GRUB
+  - [X] `malloc`/`free`/etc... (sorta... see issue #1)
 - [ ] IRQ / device drivers
   - [X] PIT timer
   - [ ] PS/2 keyboard
