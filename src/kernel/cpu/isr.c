@@ -57,11 +57,32 @@ void exception_handler(registers_t* r){
 
 
 
+isr_t handlers[256];
 void irq_handler(registers_t* r){
+	
 	// Acknowledge the interrupt, send an EOI.
 	// Did the IRQ come from slave PIC? (Anything above IRQ7 [39])
 	if(r->int_no >= 40){
 		outb(0xa0,0x20);
 	}
 	outb(0x20, 0x20); // Also send EOI to master PIC.
+
+	// Does the handler exist?
+	if(handlers[r->int_no] != 0){
+		// Yes! Go handle it.
+		isr_t handler = handlers[r->int_no];
+		handler(r);
+
+		// When we come back we send an end-of-interrupt.
+	}
 }
+
+// If an ISR is 0, then the handler does not exist, and we
+// just "let it go"
+void register_IRQ(uint8_t vector, isr_t callback){
+	printf("Registered vector %x.\n", vector, callback);
+	handlers[vector] = callback;
+}
+
+
+
