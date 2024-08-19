@@ -36,6 +36,8 @@ uint32_t malloc(uint32_t n){
     };
 
     block_t old_block = blocks[index];
+    block_t older_block = blocks[index+1];
+
     old_block.size = (old_block.size) - n;
 
     // Offset every other block by 1
@@ -47,6 +49,8 @@ uint32_t malloc(uint32_t n){
     // new block, which is the one we're mallocating.
     blocks[index]   = new_block;
     blocks[index+1] = old_block;
+
+    blocks[index+2] = older_block; // Fixes #2
     return blocks[index].location;
   }
 
@@ -77,4 +81,11 @@ void free(uint32_t mm_val){
   if(index == -1) for(;;) asm("cli//hlt"); // ???. Halt CPU cuz wtf happened LOL
   // Then we just set it as free
   blocks[index].free = true;
+}
+
+void dump_block_data(uint8_t i){
+  printf("Block #%d data:\nFree? %s\nLocation 0x%x\nSize: %d (hex -> %x)\n\n",
+      i, blocks[i].free ? "Yes" : "No",
+      blocks[i].location, blocks[i].size,
+      blocks[i].size); 
 }

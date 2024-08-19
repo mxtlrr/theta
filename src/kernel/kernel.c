@@ -38,8 +38,8 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
       };
 
       add_block(nb);
-  	printf("Start addr -> %x | Length: %x | Size: %x | Type: %d | Usable: %s\n",
-				mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type, mmmt->type-1 ? "No" : "Yes");
+  	  printf("Start addr -> %x | Length: %x | Size: %x | Type: %d | Usable: %s\n",
+			  	mmmt->addr_low, mmmt->len_low, mmmt->size, mmmt->type, mmmt->type-1 ? "No" : "Yes");
     }
   
 	}
