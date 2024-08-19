@@ -98,29 +98,27 @@ IRQ 15, 47
 
 extern irq_handler		;; see isr.c
 irq_stub:
-	pusha		;; For some reason NOT having this the CPU to enter vm86 mode.
-
+	pusha
 	mov ax, ds
 	push eax
-
-	;; Fix up selectors
 	mov ax, 10h
 	mov ds, ax
 	mov es, ax
 	mov fs, ax
 	mov gs, ax
+	push esp                 ;; ESP is a pointer to the registers_t structure
 
-	cld		;; ABI requires DF clear on function entry.
 	call irq_handler
+	pop ebx                  ;; Remove ESP from stack
 
-	pop eax
-	mov ds, ax
-	mov es, ax
-	mov fs, ax
-	mov gs, ax
-	
+	pop ebx
+	mov ds, bx
+	mov es, bx
+	mov fs, bx
+	mov gs, bx
 	popa
 	add esp, 8
+	sti
 	iret
 
 ;; Stub table -- prevents repeated code

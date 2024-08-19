@@ -11,6 +11,6 @@ void exception_handler(registers_t* r);
 
 
 
-typedef void (*isr_t)(registers_t);
+typedef void (*isr_t)(registers_t*);
 void register_IRQ(uint8_t vector, isr_t callback);
 

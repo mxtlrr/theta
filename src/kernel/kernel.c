@@ -4,6 +4,8 @@
 #include "video/stdio.h"
 
 #include "cpu/idt.h"
+
+#include "cpu/irq/kbd.h"
 #include "cpu/irq/pit.h"
 
 #include "mem/heap.h"
@@ -53,6 +55,8 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   // Free
   free(v);
   printf("%x is now freed.\n");
+
+  init_kbd();
 
   for(;;) asm("hlt");
 }

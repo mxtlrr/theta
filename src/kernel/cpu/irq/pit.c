@@ -16,7 +16,7 @@ void sleep(uint32_t time){
 }
 
 
-void callback(registers_t r){
+void callback(registers_t* r){
   ticks++;
   if(ticks % 18 == 0) seconds++;
 }
