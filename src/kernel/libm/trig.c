@@ -20,3 +20,7 @@ double sin(double x) {
 double cos(double x){
   return sin(x + MODIFIER);
 }
+
+double tan(double x){
+  return (sin(x))/(sin(x)+MODIFIER);
+}

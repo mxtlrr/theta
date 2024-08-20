@@ -21,10 +21,10 @@
 # Phase 3: Math library
 - [X] `exp()` function
 - [X] `pow()` function
-- [ ] Trig functions (Taylor series)
+- [X] Trig functions
     - [X] `sin(x)`
-    - [ ] `cos(x)`
-    - [ ] `tan(x)`
+    - [X] `cos(x)`
+    - [X] `tan(x)`
 - [X] Square root approximation -- [Heron's method](https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Heron's_method)
 - [ ] Imaginary numbers (!!)
 - [X] `abs(x)`

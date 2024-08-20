@@ -7,5 +7,6 @@
 double sin(double x);
 
 
-#define MODIFIER 1.6 // LOL
+#define MODIFIER (PI/2) // ~1.57
 double cos(double x);
+double tan(double x);
