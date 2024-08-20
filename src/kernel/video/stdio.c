@@ -118,6 +118,9 @@ void writestring(char* s){
       x += chr[4]+1;
       x += chr[4]+1;
       continue;
+    } else if(c == '\b'){
+      for(int i = 0; i < 9; i++) x -= chr[4]+1;
+      break;
     }
 
     if(x+10 >= 1010){
