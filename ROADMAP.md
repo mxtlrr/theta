@@ -22,12 +22,12 @@
 - [X] `exp()` function
 - [X] `pow()` function
 - [ ] Trig functions (Taylor series)
-    - [ ] `sin(x)`
+    - [X] `sin(x)`
     - [ ] `cos(x)`
     - [ ] `tan(x)`
 - [X] Square root approximation -- [Heron's method](https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Heron's_method)
 - [ ] Imaginary numbers (!!)
-- [ ] `abs(x)`
+- [X] `abs(x)`
 
 # Phase 4: Usability
 - [ ]  [Cooperative multitasking](https://wiki.osdev.org/Cooperative_Multitasking)

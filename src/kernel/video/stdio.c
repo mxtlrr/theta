@@ -69,9 +69,17 @@ void printf(char* fmt, ...){
           // Fixme: This code is absolutely disgusting. I'm not allowed
           // to put labels here. Kinda weird.
           saved = va_arg(ap, double);
-          puts(atoi((int)saved, 10));
-          puts(".");
-          puts(atoi(get_frac_part(saved), 10));
+          // Negative decimal
+          if(get_frac_part(saved) < 0 && get_frac_part(saved) != 0){
+            puts("-");
+            puts(atoi((int)saved, 10));
+            puts(".");
+            puts(atoi(abs(get_frac_part(saved)), 10));
+          } else {
+            puts(atoi((int)saved, 10));
+            puts(".");
+            puts(atoi(get_frac_part(saved), 10));
+          }
           break;
       }
     } else {

@@ -10,8 +10,12 @@
 
 #include "mem/heap.h"
 
+#include "libm/arith.h"
+#include "libm/trig.h"
+
 // Defined in gdt.asm
 extern void load_gdt();
+
 
 void kmain(multiboot_info_t* mbd, unsigned int magic){
   init_fb((uint32_t*)mbd->framebuffer_addr, mbd->framebuffer_pitch);
@@ -55,6 +59,8 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   // Free
   free(v);
   printf("%x is now freed.\n");
+
+  for(float i = 0; i < 15; i++) printf("sin(%f) = %f\n", i, sin(i));
 
   init_kbd();
 

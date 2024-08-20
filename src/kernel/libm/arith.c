@@ -30,3 +30,20 @@ float sqrt(int n){
   }
   return x_n;
 }
+
+float powf(float a, int b) {
+  float res = 1.0;
+  for (int i = 0; i < b; i++) res *= a;
+  return res;
+}
+
+float factf(int z) {
+  float res = 1.0;
+  for (int i = z; i > 1; i--) res *= i;
+  return res;
+}
+
+int abs(int x){
+  // Stolen (shamelessly) from gcc's sin(x) implementation.
+  return (0x7fffffff - (0x7fffffff & x)) + 1;
+}

@@ -15,3 +15,9 @@ int fact(int z);
 // Approximates the square root of some number n
 #define ACCURACY 25
 float sqrt(int n);
+
+
+float powf(float a, int b);
+float factf(int z);
+
+int abs(int x);
