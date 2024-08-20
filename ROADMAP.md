@@ -14,9 +14,9 @@
 - [X] Heap
   - [X] Get memory map from GRUB
   - [X] `malloc`/`free`/etc...
-- [ ] IRQ / device drivers
+- [X] IRQ / device drivers
   - [X] PIT timer
-  - [ ] PS/2 keyboard
+  - [X] PS/2 keyboard
 
 # Phase 3: Math library
 - [ ] `exp()` function

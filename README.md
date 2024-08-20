@@ -5,6 +5,27 @@ Monolithic IA-32 kernel that acts as a graphing calculator. Notable features:
 - Solving for `x` in any equation $ax^2 + bx + c$,
 - and more!
 
+# Motivation / "Why?"
+
+## The processor is discontinued
+The TI-84 runs on a **very** old processor (Z80) that was [discontinued](https://arstechnica.com/gadgets/2024/04/after-48-years-zilog-is-killing-the-classic-standalone-z80-microprocessor-chip/) back in April of 2024. Because
+of the antiquity of the Z80, there is only 65kb of memory available to any applications. Obviously, some of this is taken up by the kernel/operating
+system itself, so there's not much memory that can be used.
+
+The latter reason is why plotting any function takes upwards of half a 
+second. From my tests it took an **average of 4.37 seconds** to plot `sin(x)`!
+
+## Features Theta has that TI-84 does not
+The TI-84 does not support numbers that are bigger than $9.99\underbrace{\dots}_{\infty}9 \cdot 10^{99}$. So a number like $1\cdot10^{100}$ causes
+an overflow. Theta hopes to be able to support huge numbers, hopefully
+larger than $1\cdot10^{400}$, but that will come later.
+
+Additionally, theta has access to more than 65k of memory, so plotting
+functions will be way quicker.
+
+## Learning Experience
+This is my first main project with SSE, and I figured why not do it on bare
+metal, to challenge myself B)
 # Compiling
 
 ## Dependencies
