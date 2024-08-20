@@ -7,7 +7,5 @@
 double sin(double x);
 
 
-// Approximately, cos(x) = sin(x + (0.5 * (5pi - 12))).
-// aka, cos(x) = sin(x + 1.85398). Cursed, but works :^)
-#define MODIFIER (0.5 * ((5*PI) - 12))
+#define MODIFIER 1.6 // LOL
 double cos(double x);
