@@ -1,7 +1,7 @@
 #include "video/stdio.h"
 #include "video/font.h"
 
-#include "libc/math.h"
+#include "libm/arith.h"
 
 int x = 0;
 int y = 0;

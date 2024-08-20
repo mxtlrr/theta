@@ -19,13 +19,13 @@
   - [X] PS/2 keyboard
 
 # Phase 3: Math library
-- [ ] `exp()` function
-- [ ] `pow()` function
+- [X] `exp()` function
+- [X] `pow()` function
 - [ ] Trig functions (Taylor series)
     - [ ] `sin(x)`
     - [ ] `cos(x)`
     - [ ] `tan(x)`
-- [ ] Square root approximation -- [Heron's method](https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Heron's_method)
+- [X] Square root approximation -- [Heron's method](https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Heron's_method)
 - [ ] Imaginary numbers (!!)
 - [ ] `abs(x)`
 
