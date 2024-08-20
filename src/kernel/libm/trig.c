@@ -16,3 +16,7 @@ double sin(double x) {
 
   return res;
 }
+
+double cos(double x){
+  return sin(x + MODIFIER);
+}

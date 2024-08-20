@@ -60,8 +60,6 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   free(v);
   printf("%x is now freed.\n");
 
-  for(float i = 0; i < 15; i++) printf("sin(%f) = %f\n", i, sin(i));
-
   init_kbd();
 
   for(;;) asm("hlt");
