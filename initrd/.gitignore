@@ -1,8 +1,8 @@
 test/
-fs/
+fs/final/
 obj/
 *.coff
 *.o
 *.img
-gen
+gen-initrd
 *.out

@@ -1,4 +1,4 @@
-all: generate_asm_coff
+all: compile_initrd_gen generate_asm_coff build_initrd 
 .PHONY: all
 
 DIRECTORY ?= fs
@@ -16,12 +16,19 @@ LDF := -ffreestanding -O2 -nostdlib
 COPIER := i386-elf-objcopy
 
 override AS_FILES  := $(shell find ./$(DIRECTORY) -type f -name '*.asm')
-override ELF_FILES := $(shell find ./obj -type f -name '*.elf')
+override ELF_FILES := $(shell find ./obj -type f -name '*.elf' || exit)
 
 generate_asm_coff:
-	@mkdir -p obj/asm/
+	@mkdir -p obj/asm/ fs/final/
 	@$(foreach file, $(AS_FILES), echo AS $(file); $(AS) $(ASF) $(file) -o obj/asm/$(basename $(notdir $(file))).o; $(LD) $(LDF) obj/asm/$(basename $(notdir $(file))).o -o obj/$(basename $(notdir $(file))).elf;)
 	@$(foreach file, $(ELF_FILES), echo COFF $(file); $(COPIER) -O coff-i386 obj/$(basename $(notdir $(file))).elf $(DIRECTORY)/final/$(basename $(notdir $(file))).coff;)
 
+compile_initrd_gen:
+	@echo CC gen.c
+	@$(CC) -Wall -Wextra gen.c -o gen-initrd
+
+build_initrd: gen-initrd
+	@./$^ $(DIRECTORY)/final/
+
 clean:
-	rm -rf *.img gen obj/
+	rm -rf *.img gen-initrd obj/ fs/final
