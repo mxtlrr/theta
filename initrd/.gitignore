@@ -1,0 +1,8 @@
+test/
+fs/
+obj/
+*.coff
+*.o
+*.img
+gen
+*.out
