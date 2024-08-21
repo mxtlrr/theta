@@ -61,6 +61,5 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   printf("%x is now freed.\n");
 
   init_kbd();
-
   for(;;) asm("hlt");
 }
