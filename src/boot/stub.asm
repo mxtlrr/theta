@@ -46,13 +46,17 @@ enable_sse:
 
 _start:
 	mov $stack_top, %esp
-
     # Enable SSE, so we can do floating point stuff
     call enable_sse
 
     # Still here? SSE has been enabled.
-
-	/* multiboot */
+	
+	# We don't want our stack tracer to go off and execute
+	# random stuff, so let's set ebp to 0 so this is the
+	# last place we go.
+	xor %ebp, %ebp
+	
+	/* Multiboot */
 	push %eax
 	push %ebx
 	call kmain
@@ -60,6 +64,5 @@ _start:
 	/* exited? */
 	cli
 1: hlt
-	jmp 1b
-
+	jmp 
 .size _start, . - _start

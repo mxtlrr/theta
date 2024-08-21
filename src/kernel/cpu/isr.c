@@ -1,5 +1,7 @@
 #include "cpu/isr.h"
 
+int isr_count = 0;
+
 // Gets the bad opcode at the IP.
 // Adapted from my other project, mmlv.
 uint32_t get_faulty_opcode(uint32_t ip){
@@ -12,7 +14,7 @@ uint32_t get_faulty_opcode(uint32_t ip){
 |   Reserved   |    Index     |  Tbl  | E |
 +---+--  --+---+---+--  --+---+---+---+---+ */
 void analyze_gpf(uint32_t errcode){
-	setcolor(0x00027d);
+	setcolor(0x46a832);
 	printf("\nAnalysis:\n");
 	if(errcode & (1<<0)) printf("This exception originated externally from processor\n");
 
@@ -39,26 +41,92 @@ void analyze_gpf(uint32_t errcode){
 	printf("Index: %d (hex: %x)\n", (errcode >> 3) & 0x1FFF, (errcode >> 3) & 0x1FFF);
 }
 
+char* get_opcode(uint8_t opcode){
+	switch(opcode){
+		case 0xfa:
+			return "cli";
+			break;
+		case 0xf4:
+			return "hlt";
+			break;
+		case 0x61:
+			return "popa";
+			break;
+		case 0x83:
+			return "add";
+			break;
+		case 0xc4:
+			return "register ESP";
+			break;
+		default:
+			return "???";
+			break;
+	}
+}
+
+void DoStackTrace(uint32_t frames){
+	struct stackframe* stk;
+	__asm__("movl %%ebp, %0" : "=r"(stk) ::);
+	printf("Stack trace (max 3 entries):\n");
+	for(uint32_t curr = 0; stk && curr < frames; ++curr){
+		// We should see what opcodes they are, since this is kinda
+		// useless just to know WHAT it is.
+		
+		int opcodes[2] = { get_faulty_opcode(stk->eip),
+												get_faulty_opcode(stk->eip+1) };
+		printf("   0x%x [%x (%s) %x (%s)]\n", stk->eip,
+						opcodes[0], get_opcode(opcodes[0]), opcodes[1],
+						get_opcode(opcodes[1]));
+		if(stk->ebp == (void*)0){
+			printf("   End of stack trace!\n");
+			break;
+		}
+		stk = stk->ebp;
+	}
+}
+
 __attribute__((interrupt))
 void exception_handler(registers_t* r){
   setcolor(0xFF0000);
-  printf("Exception occurred at IP=%x:%x. (Opcode(s): %x %x)\n",
-					r->cs, r->ip,
-					get_faulty_opcode(r->ip), get_faulty_opcode(r->ip+1));
 
-	printf("Interrupt number is %d (hex: %xh) [ec: %d]\n", r->int_no,
-					r->int_no, r->errcode);
+	// Ring number is in low 2 bits of Code Segment.
+	uint32_t cpl = (r->cs & (1<<0)) + (r->cs & (1<<1));
 
-	// If the opcode is 0x0d (GPF) then we can analyze what actually
-	// happened.
-	if(r->int_no == 0x0d && r->errcode != 0) analyze_gpf(r->errcode);
-  for(;;) __asm__("cli; hlt");
+	printf("!! EXCEPTION OCCURRED !!\n");
+	printf("%d: v=%x e=%x cpl=%d IP=%x:%x pc=%x\n",
+				isr_count, r->int_no, r->errcode, cpl, r->cs, r->ip-1,
+				r->ip-1);
+	printf("EAX=%x EBX=%x ECX=%x EDX=%x\nESI=%x EDI=%x EBP=%x ESP=%x\n",
+					r->eax, r->ebx, r->ecx, r->edx,
+					r->esi, r->edi, r->ebp, r->esp);
+	
+	union Gdtr gdt;
+	union Idtr idt;
+	__asm__("sgdt %0" :"=m"(gdt.buffer));
+	__asm__("sidt %0" :"=m"(idt.buffer));
+
+
+	printf("GDT: %x %x\nIDT: %x %x\n", gdt.gdt_base, gdt.gdt_limit,
+					idt.idt_base, idt.idt_limit);
+	
+	// Analyze error code given from GPF
+	if(r->int_no == 0xd && r->errcode != 0) analyze_gpf(r->errcode);
+
+	// Stack trace
+	setcolor(0x820000);
+	DoStackTrace(3);
+
+	// Do not return. Halt computer
+	for(;;) __asm__("cli//hlt");
 }
+
+
 
 
 
 isr_t handlers[256];
 void irq_handler(registers_t* r){
+	isr_count++;
 	// Acknowledge the interrupt, send an EOI.
 	if (r->int_no >= 40) outb(0xA0, 0x20);
 	outb(0x20, 0x20);

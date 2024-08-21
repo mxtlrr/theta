@@ -25,7 +25,7 @@ uint32_t malloc(uint32_t n){
   }
 
   // I couldn't find anything... :/
-  if(index == -1) return NULL;
+  if(index == -1) return 0;
 
   // If the size is greater, than we split it into two
   if(blocks[index].size > n){
