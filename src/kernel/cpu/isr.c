@@ -77,13 +77,31 @@ void DoStackTrace(uint32_t frames){
 		printf("   0x%x [%x (%s) %x (%s)]\n", stk->eip,
 						opcodes[0], get_opcode(opcodes[0]), opcodes[1],
 						get_opcode(opcodes[1]));
-		if(stk->ebp == (void*)0){
-			printf("   End of stack trace!\n");
-			break;
-		}
 		stk = stk->ebp;
 	}
 }
+
+char* exceptions[] = {
+	"Division      ",
+	"Debug         ",
+	"NMI           ",
+	"Breakpoint    ",
+	"Overflow      ",
+	"Bound Range   ",
+	"Bad Opcode    ",
+	"No device     ",
+	"Double Fault  ",
+	"Bad TSS       ",
+	"No segment    ",
+	"Stack-segment ",
+	"General Prot  ",
+	"Page Fault    ",
+	"Reserved      ",
+	"x87 FPU       ",
+	"Alignment     ",
+	"Machine Check ",
+	"SIMD Exception"
+};
 
 __attribute__((interrupt))
 void exception_handler(registers_t* r){
@@ -93,6 +111,7 @@ void exception_handler(registers_t* r){
 	uint32_t cpl = (r->cs & (1<<0)) + (r->cs & (1<<1));
 
 	printf("!! EXCEPTION OCCURRED !!\n");
+	printf("Name: %s\n", exceptions[r->int_no]);
 	printf("%d: v=%x e=%x cpl=%d IP=%x:%x pc=%x\n",
 				isr_count, r->int_no, r->errcode, cpl, r->cs, r->ip-1,
 				r->ip-1);

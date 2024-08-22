@@ -59,7 +59,6 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   printf("%x is now freed.\n");
   setcolor(0xffffff);
 
-
   printf("%d modules detected at addr %x.\n", mbd->mods_count, mbd->mods_addr);
   multiboot_module_t* m = (multiboot_module_t*)mbd->mods_addr;
   int result = load_initrd(m->mod_start);
