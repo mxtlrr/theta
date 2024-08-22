@@ -9,8 +9,8 @@
 #define SEPERATOR 0x9a
 typedef struct {
   char name[64];           // File name
-  unsigned char sep;      // Genuienly will help me a ton
-  char buf[300];          // File contents
+  unsigned char sep;       // Genuienly will help me a ton
+  unsigned char buf[300];  // File contents
   unsigned short ending;
   int size;
 } file_t;
@@ -26,4 +26,4 @@ extern initrd_t initrd;
 
 // Loads the initrd into initrd_buffer.
 int load_initrd(uint32_t starting_area);
-initrd_t generate_initrd(); // Generates a functioning initrd from the buffer.
+void generate_initrd(); // Generates a functioning initrd from the buffer.
