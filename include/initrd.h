@@ -6,9 +6,11 @@
 #include "video/stdio.h"
 
 #define FILE_ENDING 0xf9b6
+#define SEPERATOR 0x9a
 typedef struct {
   char name[64];           // File name
-  char buf[8192];          // File contents
+  unsigned char sep;      // Genuienly will help me a ton
+  char buf[300];          // File contents
   unsigned short ending;
   int size;
 } file_t;
@@ -19,7 +21,6 @@ typedef struct {
   unsigned char magic;
   file_t files[256];   // Every single file available on the initrd
 } initrd_t;
-
 extern uint8_t initrd_buffer[270];
 extern initrd_t initrd;
 

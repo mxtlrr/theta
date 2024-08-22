@@ -62,12 +62,13 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   printf("%d modules detected at addr %x.\n", mbd->mods_count, mbd->mods_addr);
   multiboot_module_t* m = (multiboot_module_t*)mbd->mods_addr;
   int result = load_initrd(m->mod_start);
-  if(result == 0){
-    printf("Loaded initrd successfully!\n");
-  } else {
+  if(result != 0){
     printf("Failed to load initrd. Cannot continue.\n");
     for(;;);
   }
+  printf("Loaded initrd successfully!\n");
+  
+  initrd_t fs = generate_initrd();
 
   init_kbd();
   for(;;) asm("hlt");

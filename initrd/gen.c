@@ -8,8 +8,10 @@
 #include <dirent.h>
 
 #define FILE_ENDING 0xf9b6
+#define SEPERATOR 0x9a
 typedef struct {
   char name[64];           // File name
+  unsigned char sep;      // Genuienly will help me a ton
   char buf[8192];          // File contents
   unsigned short ending;
   int size;
@@ -81,7 +83,7 @@ int main(int argc, char** argv){
     if(files[i].name[0] == 0) break;
     printf("Adding %s to initrd...", files[i].name);
 
-    fprintf(fp, "%s", files[i].name); // Name
+    fprintf(fp, "%s%c", files[i].name, SEPERATOR); // Name and seperator
     for(int j = 0; j < files[i].size; j++)
       fprintf(fp, "%c", files[i].buf[j]);
     
