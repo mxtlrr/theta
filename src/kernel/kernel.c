@@ -9,9 +9,7 @@
 #include "cpu/irq/pit.h"
 
 #include "mem/heap.h"
-
-#include "libm/arith.h"
-#include "libm/trig.h"
+#include "initrd.h"
 
 // Defined in gdt.asm
 extern void load_gdt();
@@ -51,14 +49,26 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
 	}
 
   // Testing malloc:)
-  printf("\nTesting malloc...\n");
   setcolor(0x123456);
+  printf("\nTesting malloc...\n");
   uint32_t v = malloc(7);
   printf("Allocated 7 bytes to address %x...", v);
 
   // Free
   free(v);
   printf("%x is now freed.\n");
+  setcolor(0xffffff);
+
+
+  printf("%d modules detected at addr %x.\n", mbd->mods_count, mbd->mods_addr);
+  multiboot_module_t* m = (multiboot_module_t*)mbd->mods_addr;
+  int result = load_initrd(m->mod_start);
+  if(result == 0){
+    printf("Loaded initrd successfully!\n");
+  } else {
+    printf("Failed to load initrd. Cannot continue.\n");
+    for(;;);
+  }
 
   init_kbd();
   for(;;) asm("hlt");

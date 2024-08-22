@@ -131,7 +131,7 @@ void writestring(char* s){
       break;
     }
 
-    if(x+10 >= 1010){
+    if(x+10 >= 760){
       x = 0;
       y += font->height;
       continue;

@@ -64,5 +64,5 @@ _start:
 	/* exited? */
 	cli
 1: hlt
-	jmp 
+	jmp 1b
 .size _start, . - _start
