@@ -60,8 +60,8 @@ int main(int argc, char** argv){
         return 4;
       }
 
-      fread(buff, files[counter].size, 1, fp);
-
+      int res = fread(buff, files[counter].size, 1, fp);
+      if(res == 0) return 4;
       // Copy buffer to files
       memcpy(files[counter].buf, buff, files[counter].size);
       files[counter].ending = FILE_ENDING;

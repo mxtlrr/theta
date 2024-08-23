@@ -9,7 +9,7 @@
 #include "cpu/irq/pit.h"
 
 #include "mem/heap.h"
-#include "coff.h"
+#include "exec.h"
 
 // Defined in gdt.asm
 extern void load_gdt();
@@ -70,8 +70,8 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   generate_initrd();
   printf("Generated files from initrd!\n");
 
-  Coff_Ehdr* hdr = parse_coff(initrd.files[0]);
-  execute_coff(hdr, initrd.files[0]); // ?
+  // Execute a binary program.
+  exec_binary(initrd.files[0]);
 
   init_kbd();
   for(;;) asm("hlt");
