@@ -1,3 +1,4 @@
+#include "cpu/irq/syscall.h"
 #include "cpu/isr.h"
 
 int isr_count = 0;
@@ -42,42 +43,26 @@ void analyze_gpf(uint32_t errcode){
 }
 
 char* get_opcode(uint8_t opcode){
+	if(opcode < 10) return atoi(opcode, 10);
 	switch(opcode){
 		case 0xfa:
 			return "cli";
-			break;
 		case 0xf4:
 			return "hlt";
-			break;
 		case 0x61:
 			return "popa";
-			break;
 		case 0x83:
 			return "add";
-			break;
-		case 0xc4:
-			return "register ESP";
-			break;
+		case 0xcd:
+			return "int";
+		case 0xc3:
+			return "ret";
+		case 0x90:
+			return "nop";
+		case 0xf9:
+			return "stc";
 		default:
 			return "???";
-			break;
-	}
-}
-
-void DoStackTrace(uint32_t frames){
-	struct stackframe* stk;
-	__asm__("movl %%ebp, %0" : "=r"(stk) ::);
-	printf("Stack trace (max 3 entries):\n");
-	for(uint32_t curr = 0; stk && curr < frames; ++curr){
-		// We should see what opcodes they are, since this is kinda
-		// useless just to know WHAT it is.
-		
-		int opcodes[2] = { get_faulty_opcode(stk->eip),
-												get_faulty_opcode(stk->eip+1) };
-		printf("   0x%x [%x (%s) %x (%s)]\n", stk->eip,
-						opcodes[0], get_opcode(opcodes[0]), opcodes[1],
-						get_opcode(opcodes[1]));
-		stk = stk->ebp;
 	}
 }
 
@@ -91,10 +76,11 @@ char* exceptions[] = {
 	"Bad Opcode    ",
 	"No device     ",
 	"Double Fault  ",
+	"Reserved      ",
 	"Bad TSS       ",
 	"No segment    ",
 	"Stack-segment ",
-	"General Prot  ",
+	"General Protection",
 	"Page Fault    ",
 	"Reserved      ",
 	"x87 FPU       ",
@@ -103,9 +89,8 @@ char* exceptions[] = {
 	"SIMD Exception"
 };
 
-__attribute__((interrupt))
 void exception_handler(registers_t* r){
-  setcolor(0xFF0000);
+	setcolor(0xFF0000);
 
 	// Ring number is in low 2 bits of Code Segment.
 	uint32_t cpl = (r->cs & (1<<0)) + (r->cs & (1<<1));
@@ -113,12 +98,21 @@ void exception_handler(registers_t* r){
 	printf("!! EXCEPTION OCCURRED !!\n");
 	printf("Name: %s\n", exceptions[r->int_no]);
 	printf("%d: v=%x e=%x cpl=%d IP=%x:%x pc=%x\n",
-				isr_count, r->int_no, r->errcode, cpl, r->cs, r->ip-1,
-				r->ip-1);
+				isr_count, r->int_no, r->errcode, cpl, r->cs, r->ip,
+				r->ip);
 	printf("EAX=%x EBX=%x ECX=%x EDX=%x\nESI=%x EDI=%x EBP=%x ESP=%x\n",
 					r->eax, r->ebx, r->ecx, r->edx,
 					r->esi, r->edi, r->ebp, r->esp);
-	
+
+	printf("Opcodes from %x to %x:\n", r->ip-2, r->ip+3);
+	for(int i = r->ip-2; i != (r->ip)+3; i++){
+		if(i == r->ip) printf(" -> %x: %x [%s]\n", i, get_faulty_opcode(i),
+					get_opcode(get_faulty_opcode(i)));
+		else printf("    %x: %x [%s]\n", i, get_faulty_opcode(i),
+					get_opcode(get_faulty_opcode(i)));
+	}
+
+	// Save interrupt tables
 	union Gdtr gdt;
 	union Idtr idt;
 	__asm__("sgdt %0" :"=m"(gdt.buffer));
@@ -129,11 +123,9 @@ void exception_handler(registers_t* r){
 					idt.idt_base, idt.idt_limit);
 	
 	// Analyze error code given from GPF
-	if(r->int_no == 0xd && r->errcode != 0) analyze_gpf(r->errcode);
-
-	// Stack trace
-	setcolor(0x820000);
-	DoStackTrace(3);
+	if(r->int_no == 0xd && r->errcode != 0) {
+		analyze_gpf(r->errcode);
+	}
 
 	// Do not return. Halt computer
 	for(;;) __asm__("cli//hlt");

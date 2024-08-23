@@ -6,11 +6,6 @@
 
 #define IRQ_FROM_N(x) (x+32)
 
-struct stackframe {
-	struct stackframe* ebp;
-	uint32_t eip;
-};
-
 union Gdtr {
 	uint8_t buffer[6];
 	struct {
