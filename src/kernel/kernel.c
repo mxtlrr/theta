@@ -70,9 +70,6 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   generate_initrd();
   printf("Generated files from initrd!\n");
 
-  // Execute a binary program.
-  exec_binary(initrd.files[0]);
-
   init_kbd();
   for(;;) asm("hlt");
 }

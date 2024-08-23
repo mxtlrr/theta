@@ -46,7 +46,18 @@ void kbd_callback(registers_t* r){
       break;
     case ENTER:
       buffer_count = 0;
-      printf("\nBuffer contents: \"%s\"\n", buffer);
+      printf("\nChecking if buffer matches a file...");
+      int exec = 0;
+      for(int i = 0; i < 2; i++){
+        if(strcmp(initrd.files[i].name, buffer) == 0){
+          printf("it does! executing file \"%s\"\n", buffer);
+          exec_binary(initrd.files[i]);
+          exec = 1;
+        }
+      }
+      if(exec == 0) printf("no match!\n");
+      // TODO: handle like some math expression.
+
       printf("%s ", PROMPT);
 
       // Clear buffer

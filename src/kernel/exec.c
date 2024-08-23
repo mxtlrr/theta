@@ -20,12 +20,14 @@ extern void run_binary(uint32_t); // Exec_bin.asm, probably bad
 void exec_binary(file_t file){
   // Get valid address
   uint32_t addr_to_cp = get_valid_addr();
+  setcolor(0x00ff00);
   printf("Loading binary \"%s\" to address %x...", file.name,
       addr_to_cp);
 
   // Copy address in memory
   memcpy((char*)(uintptr_t)addr_to_cp, file.buf, 300);
-  
+  printf("done!\nExecuting binary..\n");
   // Run binary program
+  setcolor(0xffffff);
   run_binary(addr_to_cp);
 }
