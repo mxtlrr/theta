@@ -160,7 +160,7 @@ void irq_handler(registers_t* r){
 // just "let it go"
 void register_IRQ(uint8_t vector, isr_t callback){
 	setcolor(0x00ff00);
-	printf("Registered vector %x.\n", vector, callback);
+	printf("Registered vector 0x%x (%d).\n", vector, vector, callback);
 	setcolor(0xffffff);
 	handlers[vector] = callback;
 }

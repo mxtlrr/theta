@@ -7,6 +7,7 @@
 
 #include "cpu/irq/kbd.h"
 #include "cpu/irq/pit.h"
+#include "cpu/irq/syscall.h"
 
 #include "mem/heap.h"
 #include "exec.h"
@@ -70,6 +71,7 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   generate_initrd();
   printf("Generated files from initrd!\n");
 
+  initialize_syscalls();
   init_kbd();
   for(;;) asm("hlt");
 }
