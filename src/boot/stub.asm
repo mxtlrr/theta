@@ -34,7 +34,22 @@ stack_top:
 .global _start
 .type _start, @function
 
+check_sse:
+    mov $0x1, %eax
+    cpuid
+    test $1<<25, %edx
+    jz .NoSSE
+    ret
+
+    .NoSSE:
+        cli
+    2:  hlt
+        jmp 2b
+
 enable_sse:
+    # Check if SSE has been enabled
+    call check_sse
+
     mov %cr0, %eax
     and $0xfffb, %ax
     or $0x2, %ax

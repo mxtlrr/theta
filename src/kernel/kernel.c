@@ -72,6 +72,8 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
   printf("Generated files from initrd!\n");
 
   initialize_syscalls();
+
+  asm("int $0x3");
   init_kbd();
   for(;;) asm("hlt");
 }

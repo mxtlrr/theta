@@ -1,6 +1,9 @@
 #include "cpu/irq/syscall.h"
 #include "cpu/isr.h"
 
+#define KTH_BIT_SET(n,k) (n & (1<<k))
+#define XCR0_ACCESS_BIT 18
+
 int isr_count = 0;
 
 // Gets the bad opcode at the IP.
@@ -67,30 +70,65 @@ char* get_opcode(uint8_t opcode){
 }
 
 char* exceptions[] = {
-	"Division      ",
-	"Debug         ",
-	"NMI           ",
-	"Breakpoint    ",
-	"Overflow      ",
-	"Bound Range   ",
-	"Bad Opcode    ",
-	"No device     ",
-	"Double Fault  ",
-	"Reserved      ",
-	"Bad TSS       ",
-	"No segment    ",
-	"Stack-segment ",
-	"General Protection",
-	"Page Fault    ",
-	"Reserved      ",
-	"x87 FPU       ",
-	"Alignment     ",
-	"Machine Check ",
+	"Division",
+	"Debug",
+	"Non-Maskable",
+	"Breakpoint",
+	"Overflow",
+	"Bound Range",
+	"Invalid Opcode",
+	"Unavailable Device",
+	"Double Fault",
+	"Reserved",
+	"Invalid TSS",
+	"Non-present segment",
+	"Stack-segment fault",
+	"General Protection Fault",
+	"Page Fault",
+	"Reserved",
+	"x87 Floating-Point Exception",
+	"Alignment Check",
+	"Machine Check",
 	"SIMD Exception"
 };
 
 void exception_handler(registers_t* r){
-	setcolor(0xffffff);
+	setcolor(0xff0000);
+
+	// So what do we need to do?
+
+	// 1: Dump register data
+	printf("%d: v=%x (%s) IP=%x:%x pc=%x\n", isr_count, r->int_no,
+			exceptions[r->int_no], r->cs, (r->ip-1), (r->ip-1));
+	printf("EAX=%x EBX=%x ECX=%x EDX=%x\nESI=%x EDI=%x EBP=%x\n",
+			r->eax, r->ebx, r->ecx, r->edx, r->esi, r->edi, r->ebp);
+
+	// 2: Get GDT/IDT information
+	union Gdtr gdt;
+	union Idtr idt;
+	__asm__("sgdt %0" :"=m"(gdt.buffer));
+	__asm__("sidt %0" :"=m"(idt.buffer));
+	printf("   GDT ==> 0x%x (base) 0x%x (limit)\n", gdt.gdt_base, gdt.gdt_limit);
+	printf("   IDT ==> 0x%x (base) 0x%x (limit)\n", idt.idt_base, idt.idt_limit);
+
+
+	// 3: Get CR0 and SIMD registers.
+	/// 3.1 CR0
+	uint32_t cr0 = 0;
+	asm("smsw %%eax//mov %0, %%eax" :"=r"(cr0));
+	printf("CR0 value: %x\n", cr0);
+
+	/// 3.2 SIMD
+	uint64_t cr4;
+	asm ("movl %%cr4, %0;" : "=r" (cr4) ::);
+	// XCR0 can only be accessed if bit 18 of CR4 is set to 1.
+	if(KTH_BIT_SET(cr4, XCR0_ACCESS_BIT) == 1){
+		printf("XCR0 can be accessed.\n");
+		// XGETBV and XSETBV instructions are used to access XCR0.
+	}
+	// 4: Get opcodes
+
+	// 5: Analyze GPF
 	for(;;) asm("cli//hlt");
 }
 
