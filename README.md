@@ -1,8 +1,8 @@
 # theta (θ)
 Monolithic IA-32 kernel that acts as a graphing calculator. Notable features:
-- Supports SSE
-- Graphing calculator,
-- Solving for `x` in any equation $ax^2 + bx + c$,
+- SSE support out-of-the-box
+- Tries to be very fast
+- User-made applications
 - and more!
 
 # Motivation / "Why?"
@@ -16,21 +16,25 @@ The latter reason is why plotting any function takes upwards of half a
 second. From my tests it took an **average of 4.37 seconds** to plot `sin(x)`!
 
 ## Features Theta has that TI-84 does not
-The TI-84 does not support numbers that are bigger than $9.99\underbrace{\dots}_{\infty}9 \cdot 10^{99}$. So a number like $1\cdot10^{100}$ causes
-an overflow. Theta hopes to be able to support huge numbers, hopefully
-larger than $1\cdot10^{400}$, but that will come later.
 
-Additionally, theta has access to more than 65k of memory, so plotting
-functions will be way quicker.
+### 1: Small Numbers
+The largest number the Ti84 can handle is $9 \cdot 10^{99}$. Anything bigger will cause an overflow
+(and error out). Hopefully, Theta apps will be able to overcome this barrier. The goal is at least
+$1 \cdot 10^{308}$.
 
-## Learning Experience
-This is my first main project with SSE, and I figured why not do it on bare
-metal, to challenge myself B)
+### 2: More Memory
+As stated above, the Zilog Z80 has 65k of memory available. However, according to [this](https://en.wikipedia.org/wiki/TI-84_Plus_series), the TI-84 only has **24 KB** of memory available! On x86, IA-32 allows for **4 GB** memory!
+
+However, Theta tries to be both:
+1. Lightweight and
+2. Fast
+
 # Compiling
-
 ## Dependencies
 You will need:
 - An [i386-elf](https://gist.github.com/pedrominicz/93ef0510a20f990b8dc99877fd51a438) toolchain.
+- Netwide Assembler
+- GCC (non-crosscompiler)
 - GRUB development dependencies:
   - xorriso
   - mtools
@@ -38,14 +42,8 @@ You will need:
 
 ## Compilation
 
-### Building the kernel ELF
-You can just run `make`. The Makefile is designed to both:
-1. Compile the stub and kernel
-2. Bail out (and don't continue) if either compilation of the stub or kernel
-failed.
-```
-$ make
-```
+### Building the kernel and initrd
+Just run `make`. This will compile everything and will bail if it fails.
 
 ### Building an ISO file
 The `build_iso.sh` file is here to build the iso. As mentioned earlier,
