@@ -73,7 +73,6 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
 
   initialize_syscalls();
 
-  asm("int $0x3");
   init_kbd();
   for(;;) asm("hlt");
 }

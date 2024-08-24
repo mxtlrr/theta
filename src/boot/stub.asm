@@ -48,7 +48,7 @@ check_sse:
 
 enable_sse:
     # Check if SSE has been enabled
-    call check_sse
+#   call check_sse
 
     mov %cr0, %eax
     and $0xfffb, %ax

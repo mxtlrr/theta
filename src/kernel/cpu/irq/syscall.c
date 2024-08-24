@@ -10,8 +10,6 @@ syscall_data_t gen_table(registers_t* frame){
 }
 
 void handle_syscall(registers_t* frame){
-  printf("RECIEVED SYSCALL!\n");
-
   // Fix frame, get lower bytes for stuff we don't need to get ALL bytes
   // for.
   syscall_data_t syscall_data = gen_table(frame);
@@ -35,7 +33,6 @@ void handle_syscall(registers_t* frame){
     byte_ct = syscall_data.ecx;
 
     uint32_t address = 0xff00ba + (frame->ebx);
-    printf("Adjusted EBX buffer address is %x.\n", address);
     for(int i = 0; i != byte_ct; i++){
       char character = (*(char*)(address+i));
       buffer[i] = character;
