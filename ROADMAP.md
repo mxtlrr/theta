@@ -1,5 +1,6 @@
 # Phase 0: Basic setup
 - [X] Enable SSE in boot stub.
+    - [X] Check if SSE enabled
 - [X] Set up framebuffer
 - [X] Output library
   - [X] `putc`
@@ -9,8 +10,14 @@
 
 # Phase 2: CPU / important stuff
 - [X] GDT
-- [X] IDT
+- [ ] IDT
   - [X] Exceptions
+  - [ ] Better ISR handler
+    - [X] Dump registers
+    - [X] Dump descriptor values
+    - [ ] Get SSE registers
+    - [ ] Get opcodes of fault
+    - [ ] Stack trace
 - [X] Heap
   - [X] Get memory map from GRUB
   - [X] `malloc`/`free`/etc...
@@ -30,19 +37,24 @@
 - [X] `abs(x)`
 
 # Phase 4: Usability
-- [ ]  [Cooperative multitasking](https://wiki.osdev.org/Cooperative_Multitasking)
-- [ ] Code applications into kernel
-    - [ ] Graphing calcaulator
-    - [ ] Quadratic equation solver
-- [ ] GUI library
-    - [ ] Shapes (triangle, rectangles, circles)
-    - [ ] Windows
-        - [ ] Kill signal
-        - [ ] Resize signal
-    - [ ] PS/2 mouse (REQUIRED)
+- [ ] More syscalls
+    - [X] SYS\_WRITE
+    - [ ] SYS\_READ
+    - [ ] Some syscalls for framebuffer control
+        - [ ] FB\_PLOTPIXEL
+        - [ ] FB\_SETCOLOR
+    - [ ] Somehow get math functions from kernel to be able to be called from applications.
+- [X] Initrd
+    - [X] Load initrd as a module to GRUB
+    - [X] Read files (flat binary) from initrd
+- [ ] Shell
+    - [X] Check if command buffer is file, if so execute
+    - [ ] If not command buffer, parse as a math expression
+- [ ] Test if `theta` runs on real hardware
 
-# Phase 5: Homebrewing
-- [ ] Own bootloader
-    - [ ] Get mmap from BIOS
-    - [ ] Set up VESA (800x600x32), pass structure to kernel
-- [ ] Write PSF driver (sorry SSFN!)
+# Phase 5: Apps
+- [ ] Quadratic Equation Solver
+- [ ] Graphing Calculator
+    - [ ] Support linear/quadratic functions
+    - [ ] Support trig functions
+
