@@ -90,45 +90,8 @@ char* exceptions[] = {
 };
 
 void exception_handler(registers_t* r){
-	setcolor(0xFF0000);
-
-	// Ring number is in low 2 bits of Code Segment.
-	uint32_t cpl = (r->cs & (1<<0)) + (r->cs & (1<<1));
-
-	printf("!! EXCEPTION OCCURRED !!\n");
-	printf("Name: %s\n", exceptions[r->int_no]);
-	printf("%d: v=%x e=%x cpl=%d IP=%x:%x pc=%x\n",
-				isr_count, r->int_no, r->errcode, cpl, r->cs, r->ip,
-				r->ip);
-	printf("EAX=%x EBX=%x ECX=%x EDX=%x\nESI=%x EDI=%x EBP=%x ESP=%x\n",
-					r->eax, r->ebx, r->ecx, r->edx,
-					r->esi, r->edi, r->ebp, r->esp);
-
-	printf("Opcodes from %x to %x:\n", r->ip-2, r->ip+3);
-	for(int i = r->ip-2; i != (r->ip)+3; i++){
-		if(i == r->ip) printf(" -> %x: %x [%s]\n", i, get_faulty_opcode(i),
-					get_opcode(get_faulty_opcode(i)));
-		else printf("    %x: %x [%s]\n", i, get_faulty_opcode(i),
-					get_opcode(get_faulty_opcode(i)));
-	}
-
-	// Save interrupt tables
-	union Gdtr gdt;
-	union Idtr idt;
-	__asm__("sgdt %0" :"=m"(gdt.buffer));
-	__asm__("sidt %0" :"=m"(idt.buffer));
-
-
-	printf("GDT: %x %x\nIDT: %x %x\n", gdt.gdt_base, gdt.gdt_limit,
-					idt.idt_base, idt.idt_limit);
-	
-	// Analyze error code given from GPF
-	if(r->int_no == 0xd && r->errcode != 0) {
-		analyze_gpf(r->errcode);
-	}
-
-	// Do not return. Halt computer
-	for(;;) __asm__("cli//hlt");
+	setcolor(0xffffff);
+	for(;;) asm("cli//hlt");
 }
 
 

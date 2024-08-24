@@ -16,12 +16,26 @@ isr_stub_%+%1:
 %endmacro
 
 isr_stub:
-	pusha ;; Push all general purpose registers
+	pusha
+	mov ax, ds
+	push eax
+	mov ax, 10h
+	mov ds, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	push esp
 
-	cld		;; ABI requires DF clear on function entry.
 	call exception_handler
-
+	pop ebx
+	
+	pop ebx
+	mov ds, bx
+	mov es, bx
+	mov fs, bx
+	mov gs, bx
 	popa
+
 	add esp, 8
 	iret
 

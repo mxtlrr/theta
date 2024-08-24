@@ -29,8 +29,9 @@ typedef struct {
 	uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
 	// https://wiki.osdev.org/Interrupt_Service_Routines
 	uint32_t int_no, errcode;
-	uint32_t ip, cs, eflags, useless, ss;
+	uint32_t ip, cs, eflags;
 } registers_t;
+
 
 void idt_set_descriptor(uint8_t vector, void* isr, uint8_t flags);
 void idt_init(void);

@@ -7,13 +7,12 @@ OBJ := ../../obj/
 # We can't compile isr.c without using the specific -mgeneral-regs-only
 # "Why not have it for all files?" We use SSE, and -mgeneral-regs-only will
 # disable SIMD registers.
-override CFILES := $(shell find ./ -type f -name '*.c' | awk '!/isr/')
+override CFILES := $(shell find ./ -type f -name '*.c')
 override ASFILES := $(shell find ../../include -type f -name '*.asm')
 
 
 all:
 	@echo SPECIAL -- CC isr.c
-	$(CC) -c cpu/isr.c $(CFLAGS) -mgeneral-regs-only -o $(OBJ)/isr.o
 	@$(foreach file, $(CFILES), echo CC $(file); $(CC) $(CFLAGS) -c $(file) -o $(OBJ)/$(basename $(notdir $(file))).o;)
 	@$(foreach file, $(ASFILES), echo AS $(file); nasm -felf $(file) -o $(OBJ)/$(basename $(notdir $(file))).o;)
 

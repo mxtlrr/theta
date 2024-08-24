@@ -24,7 +24,7 @@ union Idtr {
 
 
 
-__attribute__((interrupt))
+__attribute__((noreturn))
 void exception_handler(registers_t* r);
 
 
