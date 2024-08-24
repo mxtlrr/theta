@@ -45,6 +45,10 @@ void kbd_callback(registers_t* r){
       lshift_on = false;
       break;
     case ENTER:
+      if(buffer[0] == 0) {
+        printf("\n%s ", PROMPT);
+        break;
+      }
       buffer_count = 0;
       printf("\nChecking if buffer matches a file...");
       int exec = 0;

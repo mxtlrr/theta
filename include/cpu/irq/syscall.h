@@ -7,6 +7,8 @@
 #include "cpu/isr.h"
 
 #define SYS_WRITE 0
+#define SYS_WRITE_NL 0xa
+
 #define SYS_READ  1
 
 typedef struct {
@@ -15,3 +17,5 @@ typedef struct {
 
 void handle_syscall(registers_t* frame);
 void initialize_syscalls(void);
+
+syscall_data_t gen_table(registers_t* frame);
