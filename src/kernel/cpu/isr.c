@@ -149,12 +149,19 @@ void irq_handler(registers_t* r){
 	
 }
 
+char* irq_regs[] = {
+	"PIT Timer",
+	"Keyboard Handler",
+	"Reserved",
+	"Resvered",
+	"Reserved",
+	"Syscalls"
+};
+
 // If an ISR is 0, then the handler does not exist, and we
 // just "let it go"
 void register_IRQ(uint8_t vector, isr_t callback){
-	setcolor(0x00ff00);
-	printf("Registered vector 0x%x (%d).\n", vector, vector, callback);
-	setcolor(0xffffff);
+	printf("[ OK ] Enabled %s.\n", irq_regs[vector-32]);
 	handlers[vector] = callback;
 }
 

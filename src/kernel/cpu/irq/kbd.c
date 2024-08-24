@@ -1,6 +1,5 @@
 #include "cpu/irq/kbd.h"
 
-#define PROMPT "theta>"
 
 char scanset[] = {
   0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', // 0-10
@@ -83,5 +82,4 @@ void init_kbd(){
   // from retrieving any more -- so let's just get the input.
   inb(0x60);
   register_IRQ(33, &kbd_callback);
-  printf("%s ", PROMPT);
 }
