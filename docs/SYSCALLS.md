@@ -1,7 +1,8 @@
 # Developer Guide -- Syscalls
 When developing applications for theta, be it a graphing calculator,
 or a simple hello world, you must somehow interact with the kernel.
-This is where syscalls come into play.
+This is where syscalls come into play. Theta uses `int 37` (IRQ5) for
+this purpose.
 
 Currently, there are 2:
 - `sys_write`
