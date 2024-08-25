@@ -1,3 +1,5 @@
+[bits 32]
+
 mov edi, eax
 xor eax, eax
 

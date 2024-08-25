@@ -55,7 +55,7 @@ void handle_syscall(registers_t* frame){
       }
       break;
 
-		case FB_PLOTPIXEL:
+		case FB_PLOTPIXEL:;
 			// Color is already handled by the FB_SETCOLOR syscall.
 			// All we need to do is plot at (EBX,ECX).
 			uint32_t x_pos = syscall_data.ebx;
@@ -69,7 +69,6 @@ void handle_syscall(registers_t* frame){
 			// ESI <- color
 			printf("Setting color to %x\n", frame->esi);
 			setcolor(frame->esi);
-			printf("Done?\n");
 			break;
   }
   return;
