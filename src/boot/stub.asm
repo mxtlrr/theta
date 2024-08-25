@@ -34,25 +34,12 @@ stack_top:
 .global _start
 .type _start, @function
 
-check_sse:
-    mov $0x1, %eax
-    cpuid
-    test $1<<25, %edx
-    jz .NoSSE
-    ret
-
-    .NoSSE:
-        cli
-    2:  hlt
-        jmp 2b
+jmp _start
 
 enable_sse:
-    # Check if SSE has been enabled
-#   call check_sse
-
     mov %cr0, %eax
     and $0xfffb, %ax
-    or $0x2, %ax
+		or $0x2, %ax
     mov %eax, %cr0
     mov %cr4, %eax
     or $0x600, %eax
@@ -62,15 +49,10 @@ enable_sse:
 _start:
 	mov $stack_top, %esp
     # Enable SSE, so we can do floating point stuff
-    call enable_sse
+  call enable_sse
 
-    # Still here? SSE has been enabled.
-	
-	# We don't want our stack tracer to go off and execute
-	# random stuff, so let's set ebp to 0 so this is the
-	# last place we go.
-	xor %ebp, %ebp
-	
+	# Still here? SSE has been enabled.
+
 	/* Multiboot */
 	push %eax
 	push %ebx
@@ -80,4 +62,5 @@ _start:
 	cli
 1: hlt
 	jmp 1b
+
 .size _start, . - _start

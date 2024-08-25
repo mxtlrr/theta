@@ -1,7 +1,7 @@
 #include "cpu/irq/syscall.h"
 #include "cpu/isr.h"
 
-#define KTH_BIT_SET(n,k) (n & (1<<k))
+#define KTH_BIT_SET(n,k) ((n & (1<<k)) == 0)
 #define XCR0_ACCESS_BIT 18
 
 int isr_count = 0;
@@ -50,6 +50,12 @@ char* get_opcode(uint8_t opcode){
 	switch(opcode){
 		case 0xfa:
 			return "cli";
+		case 0xcc:
+			return "int3";
+		case 0x58:
+			return "pop eax";
+		case 0x5a:
+			return "pop edx";
 		case 0xf4:
 			return "hlt";
 		case 0x61:
@@ -95,8 +101,6 @@ char* exceptions[] = {
 void exception_handler(registers_t* r){
 	setcolor(0xff0000);
 
-	// So what do we need to do?
-
 	// 1: Dump register data
 	printf("%d: v=%x (%s) IP=%x:%x pc=%x\n", isr_count, r->int_no,
 			exceptions[r->int_no], r->cs, (r->ip-1), (r->ip-1));
@@ -112,23 +116,35 @@ void exception_handler(registers_t* r){
 	printf("   IDT ==> 0x%x (base) 0x%x (limit)\n", idt.idt_base, idt.idt_limit);
 
 
-	// 3: Get CR0 and SIMD registers.
+	// 3: Get CR0 and SSE registers.
 	/// 3.1 CR0
-	uint32_t cr0 = 0;
-	asm("smsw %%eax//mov %0, %%eax" :"=r"(cr0));
-	printf("CR0 value: %x\n", cr0);
-
-	/// 3.2 SIMD
+	uint32_t cr0; uint32_t cr2; uint32_t cr3;
 	uint64_t cr4;
-	asm ("movl %%cr4, %0;" : "=r" (cr4) ::);
-	// XCR0 can only be accessed if bit 18 of CR4 is set to 1.
-	if(KTH_BIT_SET(cr4, XCR0_ACCESS_BIT) == 1){
-		printf("XCR0 can be accessed.\n");
-		// XGETBV and XSETBV instructions are used to access XCR0.
-	}
+	__asm__("smsw %%eax//mov %0, %%eax" :"=r"(cr0));
+	__asm__("mov %%cr2, %0" :"=r"(cr2));
+	__asm__("mov %%cr3, %0" :"=r"(cr3));
+
+	// Get CR4 -- Which has alot of important stuff we want.
+	__asm__("movl %%cr4, %0" :"=r"(cr4) ::);
+
+	printf("CR0=%x CR2=%x CR3=%x CR4=%x\n",
+				cr0, cr2, cr3, cr4);
+
+	/// 3.2 SSE
+
 	// 4: Get opcodes
+	printf("\nOpcodes at/near exception:\n");
+	setcolor(0x8c0900);
+	for(uint32_t op = (r->ip-3); op != (r->ip+3);	op++){
+		uint32_t opcode = get_faulty_opcode(op);
+		if(op == r->ip-1) printf(" -> %x: %x [%s]\n", op, opcode, get_opcode(opcode));
+		else printf("    %x: %x [%s]\n", op, opcode, get_opcode(opcode));
+	}
 
 	// 5: Analyze GPF
+	if(r->int_no == 0xd && r->errcode > 0) analyze_gpf(r->errcode);
+	setcolor(0xFFFFFF);
+	printf("Halting your computer...");
 	for(;;) asm("cli//hlt");
 }
 
