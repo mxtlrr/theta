@@ -131,6 +131,35 @@ void exception_handler(registers_t* r){
 				cr0, cr2, cr3, cr4);
 
 	/// 3.2 SSE
+	float xmm0_data[4] __attribute__((aligned(16)));
+	float xmm1_data[4] __attribute__((aligned(16)));
+	float xmm2_data[4] __attribute__((aligned(16)));
+	float xmm3_data[4] __attribute__((aligned(16)));
+	float xmm4_data[4] __attribute__((aligned(16)));
+	float xmm5_data[4] __attribute__((aligned(16)));
+	float xmm6_data[4] __attribute__((aligned(16)));
+	float xmm7_data[4] __attribute__((aligned(16)));
+	__asm__ __volatile__("movups %%xmm0, %0": "=m"(xmm0_data) ::);
+	__asm__ __volatile__("movups %%xmm1, %0": "=m"(xmm1_data) ::);
+	__asm__ __volatile__("movups %%xmm2, %0": "=m"(xmm2_data) ::);
+	__asm__ __volatile__("movups %%xmm3, %0": "=m"(xmm3_data) ::);
+	__asm__ __volatile__("movups %%xmm4, %0": "=m"(xmm4_data) ::);
+	__asm__ __volatile__("movups %%xmm5, %0": "=m"(xmm5_data) ::);
+	__asm__ __volatile__("movups %%xmm6, %0": "=m"(xmm6_data) ::);
+	__asm__ __volatile__("movups %%xmm7, %0": "=m"(xmm7_data) ::);
+
+	printf("XMM0: %x%x%x%x XMM1: %x%x%x%x XMM2: %x%x%x%x\n",
+			xmm0_data[0], xmm0_data[1], xmm0_data[2], xmm0_data[3], xmm1_data[0],
+			xmm1_data[1], xmm1_data[2], xmm1_data[3], xmm2_data[0], xmm2_data[1],
+			xmm2_data[2], xmm2_data[3]);
+	printf("XMM3: %x%x%x%x XMM4: %x%x%x%x XMM5: %x%x%x%x\n",
+					xmm3_data[0], xmm3_data[1], xmm3_data[2], xmm3_data[3],
+					xmm4_data[0], xmm4_data[1], xmm4_data[2], xmm4_data[3],
+					xmm5_data[0], xmm5_data[1], xmm5_data[2], xmm5_data[3]);
+	printf("XMM6: %x%x%x%x XMM7: %x%x%x%x\n",
+				xmm6_data[0], xmm6_data[1], xmm6_data[2], xmm6_data[3],
+				xmm7_data[0], xmm7_data[1], xmm7_data[2], xmm7_data[3]);
+
 
 	// 4: Get opcodes
 	printf("\nOpcodes at/near exception:\n");
@@ -145,7 +174,7 @@ void exception_handler(registers_t* r){
 	if(r->int_no == 0xd && r->errcode > 0) analyze_gpf(r->errcode);
 	setcolor(0xFFFFFF);
 	printf("Halting your computer...");
-	for(;;) asm("cli//hlt");
+	for(;;) __asm__("cli//hlt");
 }
 
 

@@ -63,7 +63,6 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
 		printf("   %s\n", initrd.files[i].name);
 	}
 	setcolor(0xffffff);
-	asm("int $3");
 	printf("%s", PROMPT);
-  for(;;) asm("hlt");
+  for(;;) __asm__("hlt");
 }
