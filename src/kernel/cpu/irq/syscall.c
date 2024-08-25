@@ -18,27 +18,32 @@ void handle_syscall(registers_t* frame){
   char buffer[256] = { 0 };
   uint32_t byte_ct = 0;
 
-  if(syscall_data.eax > 1){
+  if(syscall_data.eax < 2){
     // For both SYS_READ and SYS_WRITE, EBX is used for the buffer
     syscall_data.ebx = ((frame->ebx >> 8) & 0xff) << 8 | (frame->ebx & 0xff);
+		syscall_data.esi = frame->esi;
+
+		if(syscall_data.eax == 0){
+			// ECX contains the count of bytes, and EBX points to the
+    	// memory address where the buffer is located.
+    	byte_ct = syscall_data.ecx;
+
+    	uint32_t address = 0xff00ba + (frame->ebx);
+    	for(int i = 0; i != byte_ct; i++){
+      	char character = (*(char*)(address+i));
+      	buffer[i] = character;
+    	}
+		}
+
   } else {
-    if(syscall_data.eax == SYS_WRITE){
+    if(syscall_data.eax == FB_SETCOLOR){
       // ESI is used as the color.
       syscall_data.esi = frame->esi;
     } else syscall_data.esi = ((frame->esi >> 8) & 0xff) << 8 | (frame->esi & 0xff);
 
     syscall_data.ebx = frame->ebx;
-    // ECX contains the count of bytes, and EBX points to the
-    // memory address where the buffer is located.
-    byte_ct = syscall_data.ecx;
-
-    uint32_t address = 0xff00ba + (frame->ebx);
-    for(int i = 0; i != byte_ct; i++){
-      char character = (*(char*)(address+i));
-      buffer[i] = character;
-    }
-
   }
+
 
   switch(syscall_data.eax){
     case SYS_WRITE:
@@ -49,11 +54,24 @@ void handle_syscall(registers_t* frame){
         else putc(buffer[i]);
       }
       break;
-  }
 
-  // Reset color back to normal (don't enforce the 
-  // developer to do that.)
-  setcolor(0xffffff);
+		case FB_PLOTPIXEL:
+			// Color is already handled by the FB_SETCOLOR syscall.
+			// All we need to do is plot at (EBX,ECX).
+			uint32_t x_pos = syscall_data.ebx;
+			uint32_t y_pos = syscall_data.ecx;
+			printf("Color is %x, plotting at (%d, %d)\n", color, x_pos, y_pos);
+
+			putpixel(x_pos, y_pos, color);
+			break;
+
+		case FB_SETCOLOR:
+			// ESI <- color
+			printf("Setting color to %x\n", frame->esi);
+			setcolor(frame->esi);
+			printf("Done?\n");
+			break;
+  }
   return;
 }
 

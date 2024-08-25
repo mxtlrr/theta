@@ -16,7 +16,7 @@ extern uint32_t* vram;
 extern uint32_t pitch;
 void init_fb(uint32_t* v, uint32_t p);
 
-void putpixel(uint32_t* vram, int x, int y, uint32_t color);
+void putpixel(int x, int y, uint32_t color);
 
 void setcolor(uint32_t newcol);
 

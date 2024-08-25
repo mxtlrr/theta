@@ -15,7 +15,7 @@ void setcolor(uint32_t newcol){
   color = newcol;
 }
 
-void putpixel(uint32_t* vram, int x, int y, uint32_t color){
+void putpixel(int x, int y, uint32_t color){
   vram[1024*y+x] = color;
 }
 

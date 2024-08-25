@@ -57,7 +57,7 @@ void kbd_callback(registers_t* r){
       }
       // TODO: handle like some math expression.
 
-      printf("%s ", PROMPT);
+      printf("%s", PROMPT);
 
       // Clear buffer
       for(int i = 0; i < 256; i++) buffer[i] = 0;
