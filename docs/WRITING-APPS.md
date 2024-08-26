@@ -30,3 +30,16 @@ mov edi, eax
 mov eax, edi
 ret
 ```
+
+## Making sure it's 32-bit
+Make sure any application has
+```x86asm
+[bits 32]
+```
+
+at the very start. Syscalls like `FB_SETCOLOR` will not work, since applications
+run in 16-bit mode(?). Because of this, registers are truncated, i.e.
+```x86asm
+mov esi, 0xdeadaf       ;; This is truncated to ESI=0xADAF
+...
+```

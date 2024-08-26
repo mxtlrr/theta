@@ -39,10 +39,10 @@
 # Phase 4: Usability
 - [ ] More syscalls
     - [X] SYS\_WRITE
-    - [ ] SYS\_READ
+    - [X] SYS\_READ
     - [ ] Some syscalls for framebuffer control
-        - [ ] FB\_PLOTPIXEL
-        - [ ] FB\_SETCOLOR
+        - [X] FB\_PLOTPIXEL
+        - [X] FB\_SETCOLOR
     - [ ] Somehow get math functions from kernel to be able to be called from applications.
 - [X] Initrd
     - [X] Load initrd as a module to GRUB
