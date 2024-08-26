@@ -21,3 +21,7 @@
 
 void kbd_callback(registers_t* r);
 void init_kbd();
+
+
+extern char scanset[];
+extern char scanset_capital[];

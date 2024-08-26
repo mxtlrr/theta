@@ -1,3 +1,4 @@
+#include "cpu/irq/kbd.h"
 #include "cpu/irq/syscall.h"
 
 syscall_data_t gen_table(registers_t* frame){
@@ -45,6 +46,8 @@ void handle_syscall(registers_t* frame){
   }
 
 
+  char ecx_buffer[syscall_data.ecx]; // Buffer size -- used for SYS_READ
+
   switch(syscall_data.eax){
     case SYS_WRITE:
       if(syscall_data.esi != 0) setcolor(syscall_data.esi);
@@ -54,20 +57,45 @@ void handle_syscall(registers_t* frame){
         else putc(buffer[i]);
       }
       break;
+    
+  // TODO: support space. 
+  case SYS_READ:;
+    uint8_t counter = 0;
+    printf("Reading %d bytes\n", syscall_data.ecx);
+    while (counter < syscall_data.ecx) {
+      while((inb(0x64) & 0x01) == 0);
+      
+      uint8_t chr = inb(0x60);
+
+      if(chr == 28) break; // Stop if enter recieved.
+      if(chr < 100 && scanset[chr] != 0){
+        ecx_buffer[counter] = scanset[chr];
+        putc(scanset[chr]);
+        counter++;
+      }
+
+    }
+    ecx_buffer[counter] = '\0';
+
+    // Then copy the buffer to the location in memory where ebx points to
+    uint32_t address = 0xff00ba + (frame->ebx);
+    memcpy((char*)address, ecx_buffer, syscall_data.ecx);
+
+    // Clear input buffer -- this may break in some places.
+    while((inb(0x64) & 0x01) == 0);
+    break;
 
 		case FB_PLOTPIXEL:;
 			// Color is already handled by the FB_SETCOLOR syscall.
 			// All we need to do is plot at (EBX,ECX).
 			uint32_t x_pos = syscall_data.ebx;
 			uint32_t y_pos = syscall_data.ecx;
-			printf("Color is %x, plotting at (%d, %d)\n", color, x_pos, y_pos);
 
 			putpixel(x_pos, y_pos, color);
 			break;
 
 		case FB_SETCOLOR:
 			// ESI <- color
-			printf("Setting color to %x\n", frame->esi);
 			setcolor(frame->esi);
 			break;
   }
