@@ -5,7 +5,7 @@ char scanset[] = {
   0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', // 0-10
   '0', '-', '=', 0, 0, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 0, 0, // 11-27
   0, 0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', 0, 0, 0, 'z', // 28-44
-  'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 45-64
+  'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, 0, 0, ' ', 0, 0, 0, 0, 0, 0, 0, // 45-64
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 65-88
   0, 0
 };
@@ -14,7 +14,7 @@ char scanset_capital[] = {
   0, 0, '!', '@', '#', '$', '%', '^', '&', '*', '(', // 0-10
   ')', '_', '+', 0, 0, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 0, 0, // 11-27
   0, 0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 0, 0, 0, 'Z', // 28-44
-  'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 45-64
+  'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', 0, 0, 0, ' ', 0, 0, 0, 0, 0, 0, 0, // 45-64
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 65-88
   0, 0
 };
@@ -32,14 +32,11 @@ void kbd_callback(registers_t* r){
     case CAPSLOCK_SC:
       capslock = !capslock;
       break;
-    case SPACE: // Space
-      putc(' ');
-      buffer[buffer_count] = ' ';
-      buffer_count++;
-      break;
+    case RSHIFT_PRESSED:
     case LSHIFT_PRESSED:
       lshift_on = true;
       break;
+    case RSHIFT_RELEASED:
     case LSHIFT_RELEASED: // LShift off
       lshift_on = false;
       break;
@@ -56,7 +53,6 @@ void kbd_callback(registers_t* r){
         }
       }
       // TODO: handle like some math expression.
-
       printf("%s", PROMPT);
 
       // Clear buffer
