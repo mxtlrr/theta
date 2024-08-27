@@ -1,33 +1,17 @@
 #include "cpu/irq/kbd.h"
 #include "cpu/irq/syscall.h"
 
-syscall_data_t gen_table(registers_t* frame){
-  syscall_data_t r = {
-    .eax = ((frame->eax >> 8) & 0xff) << 8 | (frame->eax & 0xff),
-    .ecx = ((frame->ecx >> 8) & 0xff) << 8 | (frame->ecx & 0xff),
-    .edx = ((frame->edx >> 8) & 0xff) << 8 | (frame->edx & 0xff)
-  };
-  return r;
-}
 
 void handle_syscall(registers_t* frame){
-  // Fix frame, get lower bytes for stuff we don't need to get ALL bytes
-  // for.
-  syscall_data_t syscall_data = gen_table(frame);
-
   // Max buffer size is 256. Change later (duh)
   char buffer[256] = { 0 };
   uint32_t byte_ct = 0;
 
-  if(syscall_data.eax < 2){
-    // For both SYS_READ and SYS_WRITE, EBX is used for the buffer
-    syscall_data.ebx = ((frame->ebx >> 8) & 0xff) << 8 | (frame->ebx & 0xff);
-		syscall_data.esi = frame->esi;
-
-		if(syscall_data.eax == 0){
+  if(frame->eax < 2){
+		if(frame->eax == 0){
 			// ECX contains the count of bytes, and EBX points to the
     	// memory address where the buffer is located.
-    	byte_ct = syscall_data.ecx;
+    	byte_ct = frame->ecx;
 
     	uint32_t address = 0xff00ba + (frame->ebx);
     	for(int i = 0; i != byte_ct; i++){
@@ -35,22 +19,14 @@ void handle_syscall(registers_t* frame){
       	buffer[i] = character;
     	}
 		}
-
-  } else {
-    if(syscall_data.eax == FB_SETCOLOR){
-      // ESI is used as the color.
-      syscall_data.esi = frame->esi;
-    } else syscall_data.esi = ((frame->esi >> 8) & 0xff) << 8 | (frame->esi & 0xff);
-
-    syscall_data.ebx = frame->ebx;
   }
 
 
-  char ecx_buffer[syscall_data.ecx]; // Buffer size -- used for SYS_READ
+  char ecx_buffer[frame->ecx]; // Buffer size -- used for SYS_READ
 
-  switch(syscall_data.eax){
+  switch(frame->eax){
     case SYS_WRITE:
-      if(syscall_data.esi != 0) setcolor(syscall_data.esi);
+      if(frame->esi != 0) setcolor(frame->esi);
       else setcolor(0xffffff); // "Disabling" color.
       for(int i = 0; buffer[i] != 0; i++){
         if(buffer[i] == SYS_WRITE_NL) putc('\n');
@@ -61,8 +37,8 @@ void handle_syscall(registers_t* frame){
   // TODO: support space. 
   case SYS_READ:;
     uint8_t counter = 0;
-    printf("Reading %d bytes\n", syscall_data.ecx);
-    while (counter < syscall_data.ecx) {
+    printf("Reading %d bytes\n", frame->ecx);
+    while (counter < frame->ecx) {
       while((inb(0x64) & 0x01) == 0);
       
       uint8_t chr = inb(0x60);
@@ -79,7 +55,7 @@ void handle_syscall(registers_t* frame){
 
     // Then copy the buffer to the location in memory where ebx points to
     uint32_t address = 0xff00ba + (frame->ebx);
-    memcpy((char*)address, ecx_buffer, syscall_data.ecx);
+    memcpy((char*)address, ecx_buffer, frame->ecx);
 
     // Clear input buffer -- this may break in some places.
     while((inb(0x64) & 0x01) == 0);
@@ -88,8 +64,8 @@ void handle_syscall(registers_t* frame){
 		case FB_PLOTPIXEL:;
 			// Color is already handled by the FB_SETCOLOR syscall.
 			// All we need to do is plot at (EBX,ECX).
-			uint32_t x_pos = syscall_data.ebx;
-			uint32_t y_pos = syscall_data.ecx;
+			uint32_t x_pos = frame->ebx;
+			uint32_t y_pos = frame->ecx;
 
 			putpixel(x_pos, y_pos, color);
 			break;
