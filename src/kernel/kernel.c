@@ -5,11 +5,9 @@
 
 #include "cpu/irq/kbd.h"
 #include "cpu/irq/pit.h"
-#include "cpu/irq/syscall.h"
 
 #include "info.h"
 #include "mem/heap.h"
-#include "exec.h"
 
 // Defined in gdt.asm
 extern void load_gdt();
@@ -43,26 +41,10 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
     	printf("[ OK ] Added entry to memory map.\n");
 		}  
 	}
+  init_kbd();
 
-  multiboot_module_t* m = (multiboot_module_t*)mbd->mods_addr;
-  int result = load_initrd(m->mod_start);
-  if(result != 0){
-    printf("Failed to load inital ramdisk. Cannot continue.\n");
-    for(;;);
-  }
-  printf("[ OK ] Loaded inital ramdisk\n");
-	generate_initrd();
-  initialize_syscalls();
-	init_kbd();
-
-	printf("\nWelcome to the Theta kernel. This is build %d.\nCompiled %s %s\nFiles on the ramdisk:\n", BUILD, __DATE__, __TIME__);
-
-	setcolor(0x7b7b7b);
-	for(int i = 0; i < 256; i++){
-		if(initrd.files[i].name[0] == '\0') break;
-		printf("   %s\n", initrd.files[i].name);
-	}
-	setcolor(0xffffff);
+	printf("\nWelcome to the Theta kernel. This is build %d.\nCompiled %s %s\n", BUILD, __DATE__, __TIME__);
 	printf("%s", PROMPT);
+
   for(;;) __asm__("hlt");
 }

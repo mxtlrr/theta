@@ -10,3 +10,7 @@ size_t strlen(char* n);
 
 // Checks if two strings are equal. Returns 0 if true.
 int strcmp(const char* a, const char* b);
+
+// Converts a string to an integer.
+#define BAD_STRING -1
+long int stoi(char* fmt);

@@ -47,11 +47,7 @@ void kbd_callback(registers_t* r){
       }
 			printf("\n");
       buffer_count = 0;
-      for(int i = 0; i < 2; i++){
-        if(strcmp(initrd.files[i].name, buffer) == 0){
-          exec_binary(initrd.files[i]);
-        }
-      }
+
       // TODO: handle like some math expression.
       printf("%s", PROMPT);
 

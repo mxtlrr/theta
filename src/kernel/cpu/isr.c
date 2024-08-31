@@ -1,4 +1,3 @@
-#include "cpu/irq/syscall.h"
 #include "cpu/isr.h"
 
 #define KTH_BIT_SET(n,k) ((n & (1<<k)) == 0)

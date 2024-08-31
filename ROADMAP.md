@@ -35,26 +35,16 @@
 - [X] Square root approximation -- [Heron's method](https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Heron's_method)
 - [ ] Imaginary numbers (!!)
 - [X] `abs(x)`
+- [ ] Calculus stuff
+  - [ ] Integrals
+    - [ ] [Gauss-Kronrod](https://en.wikipedia.org/wiki/Gauss%E2%80%93Kronrod_quadrature_formula)
+    - [ ] Double or even TRIPLE integrals!?
+  - [ ] Derivatives
+  - [ ] Limits
 
 # Phase 4: Usability
-- [ ] More syscalls
-    - [X] SYS\_WRITE
-    - [X] SYS\_READ
-    - [ ] Some syscalls for framebuffer control
-        - [X] FB\_PLOTPIXEL
-        - [X] FB\_SETCOLOR
-    - [ ] Somehow get math functions from kernel to be able to be called from applications.
-- [X] Initrd
-    - [X] Load initrd as a module to GRUB
-    - [X] Read files (flat binary) from initrd
 - [ ] Shell
-    - [X] Check if command buffer is file, if so execute
-    - [ ] If not command buffer, parse as a math expression
+    - [ ] Parse buffer as a math expression
 - [ ] Test if `theta` runs on real hardware
-
-# Phase 5: Apps
-- [ ] Quadratic Equation Solver
-- [ ] Graphing Calculator
-    - [ ] Support linear/quadratic functions
-    - [ ] Support trig functions
-
+- [ ] Write some hardcoded apps to Theta (this is gonna be fun :])
+  - [ ] Quadratic equation solver
