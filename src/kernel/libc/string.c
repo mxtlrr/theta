@@ -34,7 +34,7 @@ void memcpy(void *dest, void *src, size_t n) {
 
 size_t strlen(char* n){
   int d;
-	for(d = 0; *n != 0; *n++) d++;
+	for(d = 0; *n != 0; n++) d++;
 	return d;
 }
 
@@ -52,12 +52,35 @@ int strcmp(const char* a, const char* b){
 }
 
 long int stoi(char* fmt){
-  if((fmt[0] >= 0x61 && fmt[0] <= 0x7a) ||
-      (fmt[0] >= 0x41 && fmt[0] <= 0x5a)) return BAD_STRING; // We don't want to parse ascii.
-
   long int res = 0;
 
   // 0x30 is used to convert to integer (0x34 '4' -> 0x04 [literal 4])
   for(int l = 0; l < strlen(fmt); l++) res = res*10 + (fmt[l]-0x30);
   return res;
+}
+
+float stof(char* s){
+	float res = 0;
+	int m = 0; int sign = 1;
+
+	if(s[0] == '-'){
+		sign = -1;
+		m = 1;
+	}
+
+	for(; s[m] != '.' && s[m] != '\0'; m++) res = res*10 + (s[m]-0x30);
+	if(s[m] == '.') m++; // Skip decimal. Next character is fractional bit
+
+	float divisor = 1.0f;
+	for(; s[m] != '\0'; m++){
+		divisor *= 10;
+		res += (s[m] - '0')/divisor;
+	}
+	return res*sign;
+}
+
+bool containsChar(char* s, char n){
+	for(int i = 0; i < strlen(s); i++)
+			if(s[i] == n) return true;
+	return false;
 }
