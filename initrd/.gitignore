@@ -1,8 +1,0 @@
-test/
-fs/final/
-obj/
-*.coff
-*.o
-*.img
-gen-initrd
-*.out

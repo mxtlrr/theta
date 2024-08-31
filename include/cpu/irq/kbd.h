@@ -2,7 +2,6 @@
 
 #include "cpu/isr.h"
 #include "cpu/idt.h"
-#include "exec.h"
 
 #define PROMPT "theta> "
 

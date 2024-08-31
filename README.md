@@ -2,7 +2,6 @@
 Monolithic IA-32 kernel that acts as a graphing calculator. Notable features:
 - SSE support out-of-the-box
 - Tries to be very fast
-- User-made applications
 - and more!
 
 # Motivation / "Why?"
@@ -34,7 +33,6 @@ However, Theta tries to be both:
 You will need:
 - An [i386-elf](https://gist.github.com/pedrominicz/93ef0510a20f990b8dc99877fd51a438) toolchain.
 - Netwide Assembler
-- GCC (non-crosscompiler)
 - GRUB development dependencies:
   - xorriso
   - mtools
