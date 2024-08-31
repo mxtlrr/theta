@@ -49,6 +49,7 @@ void kbd_callback(registers_t* r){
       buffer_count = 0;
 
       // TODO: handle like some math expression.
+			parse_instruction(buffer);
       printf("%s", PROMPT);
 
       // Clear buffer
@@ -65,8 +66,8 @@ void kbd_callback(registers_t* r){
             buffer[buffer_count] = scanset_capital[chr];
         }
         buffer_count++;
-      } //else printf("-%d ", chr);
-      break;
+      }
+			break;
   }
 }
 void init_kbd(){

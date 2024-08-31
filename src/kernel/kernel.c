@@ -2,12 +2,12 @@
 #include "video/stdio.h"
 
 #include "cpu/idt.h"
-
 #include "cpu/irq/kbd.h"
 #include "cpu/irq/pit.h"
 
 #include "info.h"
 #include "mem/heap.h"
+#include "libm/init.h"
 
 // Defined in gdt.asm
 extern void load_gdt();
@@ -42,6 +42,8 @@ void kmain(multiboot_info_t* mbd, unsigned int magic){
 		}  
 	}
   init_kbd();
+	setup_functions();
+
 
 	printf("\nWelcome to the Theta kernel. This is build %d.\nCompiled %s %s\n", BUILD, __DATE__, __TIME__);
 	printf("%s", PROMPT);
