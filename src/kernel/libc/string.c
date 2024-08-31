@@ -50,3 +50,14 @@ int strcmp(const char* a, const char* b){
   } while (c1 == c2);
   return c1 - c2;
 }
+
+long int stoi(char* fmt){
+  if((fmt[0] >= 0x61 && fmt[0] <= 0x7a) ||
+      (fmt[0] >= 0x41 && fmt[0] <= 0x5a)) return BAD_STRING; // We don't want to parse ascii.
+
+  long int res = 0;
+
+  // 0x30 is used to convert to integer (0x34 '4' -> 0x04 [literal 4])
+  for(int l = 0; l < strlen(fmt); l++) res = res*10 + (fmt[l]-0x30);
+  return res;
+}
