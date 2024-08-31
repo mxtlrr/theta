@@ -16,5 +16,5 @@ typedef struct {
   unsigned int   cmap_offs;
 } __attribute__((packed)) ssfn_font_t;
 
-extern unsigned char font_data[8283];
 extern ssfn_font_t* font;
+extern unsigned char _binary_src_console_sfn_start;
